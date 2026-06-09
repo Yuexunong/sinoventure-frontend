@@ -1032,10 +1032,21 @@ footer{background:var(--ink2);padding:64px 5vw 32px;border-top:1px solid var(--l
 </footer>
 
 <script>
-// Loader
-window.addEventListener('load',()=>{
-  setTimeout(()=>document.getElementById('loader').classList.add('out'),1200);
-});
+// Loader — 双重保障：DOMContentLoaded 后最多等 2.5s，window.load 后 1.2s，取先到者
+(function(){
+  var dismissed=false;
+  function dismiss(){
+    if(dismissed)return;
+    dismissed=true;
+    setTimeout(()=>document.getElementById('loader').classList.add('out'),400);
+  }
+  // 保底：DOM 就绪后最多等 2500ms，防止字体/图片超时卡死
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(dismiss,2500));
+  // 理想情况：所有资源加载完后 1200ms
+  window.addEventListener('load',()=>setTimeout(dismiss,1200));
+  // 极端保底：3500ms 强制消失
+  setTimeout(dismiss,3500);
+})();
 
 // Nav scroll
 window.addEventListener('scroll',()=>{
