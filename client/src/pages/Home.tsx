@@ -137,10 +137,37 @@ export default function Home() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isMobile = useIsMobile();
 
-  // ── Loader: fixed 1.5s brand animation, NO image waiting ──
+  // ── Loader: wait for Alibaba image + minimum 2.5s, max 3s ──
   useEffect(() => {
-    const t = setTimeout(() => setLoaderOut(true), 1500);
-    return () => clearTimeout(t);
+    const MIN_DISPLAY = 2500;  // minimum brand exposure time
+    const MAX_WAIT    = 3000;  // hard cap — never exceed 3s
+    const startTime = Date.now();
+    let closed = false;
+
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      setLoaderOut(true);
+    };
+
+    // Hard cap: always close by 3s
+    const hardCap = setTimeout(close, MAX_WAIT);
+
+    // Load the Alibaba campus image (mobile = 44KB, loads fast on 4G)
+    const imgSrc = window.innerWidth < 768
+      ? "/manus-storage/alibaba-campus-mobile_62ad74a1.webp"
+      : "/manus-storage/alibaba-campus-desk_5049eb4e.webp";
+
+    const img = new Image();
+    img.onload = img.onerror = () => {
+      // Ensure minimum display time is respected
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, MIN_DISPLAY - elapsed);
+      setTimeout(close, remaining);
+    };
+    img.src = imgSrc;
+
+    return () => { clearTimeout(hardCap); closed = true; };
   }, []);
 
   useEffect(() => {
