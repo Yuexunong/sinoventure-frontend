@@ -16,8 +16,12 @@ const line = "rgba(184,150,90,0.3)";
 // Brand assets — all WebP for maximum compression without quality loss
 const LOGO = "/manus-storage/bridgechina-logo-transparent_9d98e64f.webp";
 const ALIBABA_LOGO = "/manus-storage/alibaba-logo_a1c0e8fa.webp";
-const ALIBABA_IMG = "/manus-storage/alibaba-campus_48fcbdd6.webp";
-const ALIBABA_IMG2 = "/manus-storage/alibaba-campus2_b72161b4.webp";
+// Responsive campus images: mobile=44KB, desktop=131KB
+const ALIBABA_IMG_MOBILE = "/manus-storage/alibaba-campus-mobile_62ad74a1.webp";  // 44KB
+const ALIBABA_IMG_DESK   = "/manus-storage/alibaba-campus-desk_5049eb4e.webp";    // 131KB
+const ALIBABA_IMG2_MOBILE = "/manus-storage/alibaba-campus2-mobile_d7d650ab.webp"; // 27KB
+// LQIP — 40px blurred placeholder, inline base64, loads instantly
+const ALIBABA_LQIP = "data:image/webp;base64,UklGRu4AAABXRUJQVlA4IOIAAACwBgCdASooABsAPzmUulavKyWjqrgMAeAnCWMAsPAIAUAFpDLg/hj7TCHQyvEFXdSd8JZTL6aECmFMwevkAAD30XfjDGbU61yA9Zkh5WV3XQq3eidP8wwCZokjfveG6epyucWe5u8nj/0/hKFXsm5xy/LwGKX++lfQgqgJe6FeqtB1euW12ungtxV+eQVqX53JNRmvBv5DJeNIjZS0efYnqgcS+iYLqYXG1+WLBXyzCUAsAtYQuXb4A/JYj1foNi4u8kyL8gG+oaHNPIuVxq/tpCNf9b1I2dfy5QUOm9RifgAA";
 
 // Unsplash helper — always request WebP at correct responsive size
 const unsplash = (id: string, w: number, q = 80) =>
@@ -26,24 +30,13 @@ const unsplash = (id: string, w: number, q = 80) =>
 // Google Maps link — Alibaba Binjiang Campus Building 5, Hangzhou
 const MAP_LINK = "https://maps.google.com/?q=阿里巴巴滨江园区五号楼,杭州市滨江区,浙江省";
 
-// Hero slides — WebP, responsive srcSet for mobile/desktop
+// Hero slides — mobile uses 480px images for fast load, desktop 1200px
 const SLIDES = [
-  { id: "photo-1538428494232-9c0d8a3ab403", bg: unsplash("photo-1538428494232-9c0d8a3ab403", 1400, 80), bgMobile: unsplash("photo-1538428494232-9c0d8a3ab403", 800, 75), city: "Shanghai · 上海" },
-  { id: "photo-1508804185872-d7badad00f7d", bg: unsplash("photo-1508804185872-d7badad00f7d", 1400, 80), bgMobile: unsplash("photo-1508804185872-d7badad00f7d", 800, 75), city: "Beijing · 北京" },
-  { id: "photo-1474181487882-5abf3f0ba6c2", bg: unsplash("photo-1474181487882-5abf3f0ba6c2", 1400, 80), bgMobile: unsplash("photo-1474181487882-5abf3f0ba6c2", 800, 75), city: "Guangzhou · 广州" },
-  { id: "photo-1566552881560-0be862a7c445", bg: unsplash("photo-1566552881560-0be862a7c445", 1400, 80), bgMobile: unsplash("photo-1566552881560-0be862a7c445", 800, 75), city: "Hangzhou · 杭州" },
+  { bg: unsplash("photo-1538428494232-9c0d8a3ab403", 1200, 75), bgMobile: unsplash("photo-1538428494232-9c0d8a3ab403", 480, 65), city: "Shanghai · 上海" },
+  { bg: unsplash("photo-1508804185872-d7badad00f7d", 1200, 75), bgMobile: unsplash("photo-1508804185872-d7badad00f7d", 480, 65), city: "Beijing · 北京" },
+  { bg: unsplash("photo-1474181487882-5abf3f0ba6c2", 1200, 75), bgMobile: unsplash("photo-1474181487882-5abf3f0ba6c2", 480, 65), city: "Guangzhou · 广州" },
+  { bg: unsplash("photo-1566552881560-0be862a7c445", 1200, 75), bgMobile: unsplash("photo-1566552881560-0be862a7c445", 480, 65), city: "Hangzhou · 杭州" },
 ];
-
-const CRITICAL_IMAGES = [LOGO, ALIBABA_LOGO, ALIBABA_IMG];
-
-function preloadImages(urls: string[]): Promise<void[]> {
-  return Promise.all(urls.map((url) => new Promise<void>((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = () => resolve();
-    img.src = url;
-  })));
-}
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -144,13 +137,10 @@ export default function Home() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isMobile = useIsMobile();
 
+  // ── Loader: fixed 1.5s brand animation, NO image waiting ──
   useEffect(() => {
-    let cancelled = false;
-    const maxWait = setTimeout(() => { if (!cancelled) setLoaderOut(true); }, 8000);
-    preloadImages(CRITICAL_IMAGES).then(() => {
-      if (!cancelled) setTimeout(() => setLoaderOut(true), 600);
-    });
-    return () => { cancelled = true; clearTimeout(maxWait); };
+    const t = setTimeout(() => setLoaderOut(true), 1500);
+    return () => clearTimeout(t);
   }, []);
 
   useEffect(() => {
@@ -206,9 +196,12 @@ export default function Home() {
     <div style={{ background: ink, color: "#fff", minHeight: "100vh", overflowX: "hidden" }}>
 
       {/* ─── LOADER ─── */}
-      <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 1s 0.3s", opacity: loaderOut ? 0 : 1, pointerEvents: loaderOut ? "none" : "all", overflow: "hidden" }}>
+      <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.8s", opacity: loaderOut ? 0 : 1, pointerEvents: loaderOut ? "none" : "all", overflow: "hidden" }}>
+        {/* LQIP base64 loads instantly — no network request needed */}
         <div style={{ position: "absolute", inset: 0, background: ink }} />
-        <img src={ALIBABA_IMG} alt="" fetchPriority="high" decoding="sync" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${ALIBABA_LQIP}')`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(12px)", transform: "scale(1.05)" }} />
+        {/* Full-res loads in background, visible after blur */}
+        <img src={isMobile ? ALIBABA_IMG_MOBILE : ALIBABA_IMG_DESK} alt="" loading="eager" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(10,14,23,0.72)" }} />
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 30%, rgba(10,14,23,0.85) 100%)" }} />
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
@@ -296,7 +289,16 @@ export default function Home() {
         <div style={{ position: "absolute", inset: 0, background: ink, zIndex: 0 }} />
         {SLIDES.map((slide, i) => (
           <div key={i} style={{ position: "absolute", inset: 0, opacity: i === currentSlide ? 1 : 0, transition: i === 0 ? "none" : "opacity 1.4s ease", zIndex: 1 }}>
-            <img src={slide.bg} srcSet={`${slide.bgMobile} 800w, ${slide.bg} 1400w`} sizes="100vw" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "low"} decoding={i === 0 ? "sync" : "async"} />
+            <img
+              src={isMobile ? slide.bgMobile : slide.bg}
+              srcSet={`${slide.bgMobile} 480w, ${slide.bg} 1200w`}
+              sizes="100vw"
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : "low"}
+              decoding={i === 0 ? "async" : "async"}
+            />
             <div style={{ position: "absolute", inset: 0, background: isMobile ? "rgba(10,14,23,0.72)" : "linear-gradient(to right, rgba(10,14,23,0.82) 0%, rgba(10,14,23,0.55) 50%, rgba(10,14,23,0.3) 100%)" }} />
           </div>
         ))}
@@ -365,7 +367,7 @@ export default function Home() {
 
       {/* ─── ALIBABA ENDORSEMENT BANNER ─── */}
       <section style={{ background: ink2, borderTop: `1px solid ${line}`, borderBottom: `1px solid ${line}`, padding: isMobile ? "48px 20px" : "64px 5vw", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${ALIBABA_IMG}')`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.08 }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${ALIBABA_IMG_MOBILE}')`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.08 }} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ textAlign: "center" as const, marginBottom: isMobile ? 32 : 48 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, border: `1px solid ${line}`, padding: "6px 16px", marginBottom: 20 }}>
@@ -397,7 +399,14 @@ export default function Home() {
 
           {/* Campus image strip */}
           <div data-reveal style={{ marginTop: isMobile ? 24 : 32, position: "relative", overflow: "hidden" }}>
-            <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center, Hangzhou Binjiang" style={{ width: "100%", height: isMobile ? 180 : 260, objectFit: "cover", objectPosition: "center 40%", display: "block" }} loading="lazy" />
+            <img
+              src={isMobile ? ALIBABA_IMG_MOBILE : ALIBABA_IMG_DESK}
+              srcSet={`${ALIBABA_IMG_MOBILE} 600w, ${ALIBABA_IMG_DESK} 1000w`}
+              sizes="(max-width:768px) 100vw, 80vw"
+              alt="Alibaba Global Cross-border Center, Hangzhou Binjiang"
+              style={{ width: "100%", height: isMobile ? 180 : 260, objectFit: "cover", objectPosition: "center 40%", display: "block" }}
+              loading="lazy"
+            />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(10,14,23,0.7) 0%, transparent 40%, transparent 60%, rgba(10,14,23,0.7) 100%)" }} />
             <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(10,14,23,0.8))", padding: isMobile ? "16px 16px" : "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
               <div>
@@ -472,7 +481,14 @@ export default function Home() {
             </ul>
           </div>
           <div data-reveal style={{ position: "relative" }}>
-            <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center" style={{ width: "100%", height: isMobile ? 240 : "auto", aspectRatio: isMobile ? undefined : "4/5", objectFit: "cover", objectPosition: "center", display: "block" }} loading="lazy" />
+            <img
+            src={isMobile ? ALIBABA_IMG_MOBILE : ALIBABA_IMG_DESK}
+            srcSet={`${ALIBABA_IMG_MOBILE} 600w, ${ALIBABA_IMG_DESK} 1000w`}
+            sizes="(max-width:768px) 100vw, 50vw"
+            alt="Alibaba Global Cross-border Center"
+            style={{ width: "100%", height: isMobile ? 240 : "auto", aspectRatio: isMobile ? undefined : "4/5", objectFit: "cover", objectPosition: "center", display: "block" }}
+            loading="lazy"
+          />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 50%, rgba(10,14,23,0.7))" }} />
             {!isMobile && <div style={{ position: "absolute", top: -16, left: -16, right: 16, bottom: 16, border: `1px solid ${line}`, pointerEvents: "none", zIndex: -1 }} />}
             <div style={{ position: "absolute", bottom: isMobile ? 12 : -24, right: isMobile ? 12 : -32, background: gold, color: ink, padding: isMobile ? "16px 14px" : "24px 20px", textAlign: "center" as const }}>
@@ -607,7 +623,14 @@ export default function Home() {
 
             {/* Alibaba endorsement image */}
             <div data-reveal style={{ position: "relative", overflow: "hidden", border: `1px solid ${line}` }}>
-              <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center" style={{ width: "100%", height: isMobile ? 160 : 200, objectFit: "cover", objectPosition: "center 40%", display: "block" }} loading="lazy" />
+              <img
+                src={isMobile ? ALIBABA_IMG_MOBILE : ALIBABA_IMG_DESK}
+                srcSet={`${ALIBABA_IMG_MOBILE} 600w, ${ALIBABA_IMG_DESK} 1000w`}
+                sizes="(max-width:768px) 100vw, 50vw"
+                alt="Alibaba Global Cross-border Center"
+                style={{ width: "100%", height: isMobile ? 160 : 200, objectFit: "cover", objectPosition: "center 40%", display: "block" }}
+                loading="lazy"
+              />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(10,14,23,0.85))" }} />
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
                 <img src={ALIBABA_LOGO} alt="Alibaba" style={{ width: 64, height: "auto", objectFit: "contain" }} />
