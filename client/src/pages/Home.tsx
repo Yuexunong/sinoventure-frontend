@@ -12,7 +12,8 @@ const ink2 = "#131929";
 const line = "rgba(184,150,90,0.3)";
 
 // Brand assets
-const LOGO = "/manus-storage/bridgechina-logo_fecd7865.jpg";
+const LOGO = "/manus-storage/bridgechina-logo-transparent_ece5edb3.png"; // transparent PNG
+const ALIBABA_LOGO = "/manus-storage/alibaba-logo_da5c1d45.png"; // official Alibaba brand logo
 const ALIBABA_IMG = "/manus-storage/alibaba-campus_e017c9e6.jpg";
 const ALIBABA_IMG2 = "/manus-storage/alibaba-campus2_4333088b.jpg";
 
@@ -107,7 +108,7 @@ function BrandLogo({ size = 40 }: { size?: number }) {
     <img
       src={LOGO}
       alt="BridgeChina"
-      style={{ width: size, height: size, objectFit: "contain", objectPosition: "center", background: "#000", flexShrink: 0 }}
+      style={{ width: size * 1.8, height: size, objectFit: "contain", objectPosition: "left center", background: "transparent", flexShrink: 0 }}
     />
   );
 }
@@ -190,9 +191,9 @@ export default function Home() {
 
         {/* Brand block */}
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
-          {/* Logo */}
-          <div style={{ width: isMobile ? 140 : 180, height: isMobile ? 140 : 180, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
-            <img src={LOGO} alt="BridgeChina" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          {/* Logo — transparent PNG, wide aspect ratio */}
+          <div style={{ width: isMobile ? 220 : 300, height: isMobile ? 88 : 120, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+            <img src={LOGO} alt="BridgeChina" style={{ width: "100%", height: "100%", objectFit: "contain", filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.6)) brightness(1.05)" }} />
           </div>
 
           {/* Brand name */}
@@ -206,10 +207,11 @@ export default function Home() {
           {/* Loading bar */}
           <div className="loader-line-anim" style={{ width: isMobile ? 100 : 140 }} />
 
-          {/* Alibaba badge */}
-          <div style={{ marginTop: 32, display: "flex", alignItems: "center", gap: 10, border: `1px solid ${line}`, padding: "8px 18px", background: "rgba(10,14,23,0.6)" }}>
-            <img src={ALIBABA_IMG2} alt="Alibaba" style={{ width: 28, height: 20, objectFit: "cover" }} />
-            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em" }}>Based at Alibaba Global Cross-border Center</span>
+          {/* Alibaba badge — official logo */}
+          <div style={{ marginTop: 32, display: "flex", alignItems: "center", gap: 12, border: `1px solid ${line}`, padding: "10px 20px", background: "rgba(10,14,23,0.65)", backdropFilter: "blur(8px)" }}>
+            <img src={ALIBABA_LOGO} alt="Alibaba" style={{ width: 80, height: "auto", objectFit: "contain" }} />
+            <div style={{ width: 1, height: 28, background: line, flexShrink: 0 }} />
+            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", lineHeight: 1.6 }}>Global Cross-border<br />Center · Hangzhou</span>
           </div>
         </div>
       </div>
@@ -264,7 +266,7 @@ export default function Home() {
             Free Consultation
           </button>
           <div style={{ marginTop: 28, padding: "16px", border: `1px solid ${line}`, background: "rgba(184,150,90,0.05)", display: "flex", alignItems: "center", gap: 12 }}>
-            <img src={ALIBABA_IMG2} alt="Alibaba" style={{ width: 48, height: 34, objectFit: "cover" }} />
+            <img src={ALIBABA_LOGO} alt="Alibaba" style={{ width: 72, height: "auto", objectFit: "contain" }} />
             <div>
               <div style={{ fontSize: 10, color: gold, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Our Location</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>Alibaba Global Cross-border Center · Hangzhou</div>
@@ -552,7 +554,7 @@ export default function Home() {
               <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center" style={{ width: "100%", height: isMobile ? 160 : 200, objectFit: "cover", objectPosition: "center 40%", display: "block" }} loading="lazy" />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(10,14,23,0.85))" }} />
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
-                <img src={ALIBABA_IMG2} alt="" style={{ width: 36, height: 26, objectFit: "cover", border: `1px solid ${gold}` }} />
+                <img src={ALIBABA_LOGO} alt="Alibaba" style={{ width: 64, height: "auto", objectFit: "contain" }} />
                 <div>
                   <div style={{ fontSize: 10, color: gold, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Alibaba Global Cross-border Center</div>
                   <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>阿里巴巴全球跨境中心 · 杭州滨江</div>
@@ -598,7 +600,7 @@ export default function Home() {
             <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, marginTop: 14, maxWidth: 260 }}>Professional foreign affairs and business setup services for international entrepreneurs in China. Based at Alibaba Global Cross-border Center, Hangzhou.</p>
             {/* Alibaba badge in footer */}
             <a href={MAP_LINK} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 16, border: `1px solid ${line}`, padding: "8px 12px", textDecoration: "none" }}>
-              <img src={ALIBABA_IMG2} alt="" style={{ width: 30, height: 22, objectFit: "cover" }} />
+              <img src={ALIBABA_LOGO} alt="Alibaba" style={{ width: 60, height: "auto", objectFit: "contain" }} />
               <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em" }}>Alibaba Global Cross-border Center</span>
             </a>
           </div>
