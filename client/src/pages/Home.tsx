@@ -1562,7 +1562,7 @@ export default function Home() {
             Book Consultation
           </button>
           <a
-            href="https://wa.me"
+            href="https://wa.me/17757447058"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -1647,19 +1647,19 @@ export default function Home() {
                 {
                   icon: "✉",
                   label: "Email",
-                  value: "enquiries@sinoventure.com",
+                  value: "ylsg19971102@gmail.com",
                   note: "Replies within 24 hours",
                 },
                 {
                   icon: "💬",
                   label: "WeChat · WhatsApp",
-                  value: "+86 138 0000 0000",
-                  note: "Mon – Fri, 09:00 – 18:00 CST",
+                  value: "+1 775 744 7058",
+                  note: "WeChat / WhatsApp: 17757447058",
                 },
                 {
                   icon: "📍",
                   label: "Offices",
-                  value: "Shanghai · Beijing · Shenzhen\nGuangzhou · Hangzhou · Chengdu",
+                  value: "杭州市滨江区\n阿里巴巴全球跨境中心",
                   note: "",
                 },
               ].map((item, i) => (
