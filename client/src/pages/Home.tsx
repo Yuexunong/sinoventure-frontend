@@ -137,19 +137,48 @@ export default function Home() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isMobile = useIsMobile();
 
-  // ── Loader: 2.8s brand splash (industry standard — Apple/Airbnb/Notion) ──
-  // Simultaneously preloads Alibaba image in background so it's ready when Loader exits
+  // ── Loader: wait for ALL brand assets, then show for 2.8s, hard cap 5s ──
+  // Priority: Alibaba campus BG + Alibaba logo + BridgeChina logo must ALL be visible
   useEffect(() => {
-    // Kick off image preload immediately (non-blocking)
-    const imgSrc = window.innerWidth < 768
+    const BRAND_DISPLAY_TIME = 2800; // show brand for 2.8s after images ready
+    const HARD_CAP = 5000;           // never exceed 5s total
+    const startTime = Date.now();
+    let closed = false;
+
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      setLoaderOut(true);
+    };
+
+    // Hard cap: always close by 5s no matter what
+    const hardCapTimer = setTimeout(close, HARD_CAP);
+
+    // Load all 3 critical brand assets in parallel
+    const campusSrc = window.innerWidth < 768
       ? "/manus-storage/alibaba-campus-mobile_62ad74a1.webp"
       : "/manus-storage/alibaba-campus-desk_5049eb4e.webp";
-    const preload = new Image();
-    preload.src = imgSrc;
+    const logoSrc = "/manus-storage/bridgechina-logo-transparent_9d98e64f.webp";
+    const alibabaLogoSrc = "/manus-storage/alibaba-logo_a1c0e8fa.webp";
 
-    // Fixed 2.8s — sweet spot: brand exposure without user frustration
-    const timer = setTimeout(() => setLoaderOut(true), 2800);
-    return () => clearTimeout(timer);
+    let loaded = 0;
+    const onAssetReady = () => {
+      loaded++;
+      if (loaded < 3) return; // wait for all 3
+      // All assets loaded — now ensure brand is shown for full 2.8s from start
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, BRAND_DISPLAY_TIME - elapsed);
+      setTimeout(close, remaining);
+    };
+
+    [campusSrc, logoSrc, alibabaLogoSrc].forEach(src => {
+      const img = new Image();
+      img.onload = onAssetReady;
+      img.onerror = onAssetReady; // count errors too so we don't hang
+      img.src = src;
+    });
+
+    return () => { clearTimeout(hardCapTimer); closed = true; };
   }, []);
 
   useEffect(() => {
