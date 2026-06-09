@@ -11,29 +11,53 @@ const ink = "#0A0E17";
 const ink2 = "#131929";
 const line = "rgba(184,150,90,0.3)";
 
-// Brand assets
-const LOGO = "/manus-storage/bridgechina-logo-transparent_ece5edb3.png"; // transparent PNG
-const ALIBABA_LOGO = "/manus-storage/alibaba-logo_da5c1d45.png"; // official Alibaba brand logo
-const ALIBABA_IMG = "/manus-storage/alibaba-campus_e017c9e6.jpg";
-const ALIBABA_IMG2 = "/manus-storage/alibaba-campus2_4333088b.jpg";
+// Brand assets — all WebP for maximum compression without quality loss
+const LOGO = "/manus-storage/bridgechina-logo-transparent_9d98e64f.webp"; // 8KB WebP (was 128KB PNG)
+const ALIBABA_LOGO = "/manus-storage/alibaba-logo_a1c0e8fa.webp"; // 9KB WebP (was 26KB PNG)
+const ALIBABA_IMG = "/manus-storage/alibaba-campus_48fcbdd6.webp"; // 487KB WebP (was 3MB JPG)
+const ALIBABA_IMG2 = "/manus-storage/alibaba-campus2_b72161b4.webp"; // 93KB WebP (was 160KB JPG)
+
+// Unsplash helper — always request WebP at correct responsive size
+const unsplash = (id: string, w: number, q = 80) =>
+  `https://images.unsplash.com/${id}?auto=format&fm=webp&w=${w}&q=${q}&fit=crop`;
 
 // Google Maps link — Alibaba Binjiang Campus Building 5, Hangzhou
 const MAP_LINK = "https://maps.google.com/?q=阿里巴巴滨江园区五号楼,杭州市滨江区,浙江省";
 
-// Using direct Unsplash source URLs for reliable loading
+// Hero slides — WebP, responsive srcSet for mobile/desktop
 const SLIDES = [
-  { bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?auto=format&w=1400&q=75", city: "Shanghai · 上海" },
-  { bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&w=1400&q=75", city: "Beijing · 北京" },
-  { bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?auto=format&w=1400&q=75", city: "Guangzhou · 广州" },
-  { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&w=1400&q=75", city: "Hangzhou · 杭州" },
+  {
+    id: "photo-1538428494232-9c0d8a3ab403",
+    bg: unsplash("photo-1538428494232-9c0d8a3ab403", 1400, 80),
+    bgMobile: unsplash("photo-1538428494232-9c0d8a3ab403", 800, 75),
+    city: "Shanghai · 上海",
+  },
+  {
+    id: "photo-1508804185872-d7badad00f7d",
+    bg: unsplash("photo-1508804185872-d7badad00f7d", 1400, 80),
+    bgMobile: unsplash("photo-1508804185872-d7badad00f7d", 800, 75),
+    city: "Beijing · 北京",
+  },
+  {
+    id: "photo-1474181487882-5abf3f0ba6c2",
+    bg: unsplash("photo-1474181487882-5abf3f0ba6c2", 1400, 80),
+    bgMobile: unsplash("photo-1474181487882-5abf3f0ba6c2", 800, 75),
+    city: "Guangzhou · 广州",
+  },
+  {
+    id: "photo-1566552881560-0be862a7c445",
+    bg: unsplash("photo-1566552881560-0be862a7c445", 1400, 80),
+    bgMobile: unsplash("photo-1566552881560-0be862a7c445", 800, 75),
+    city: "Hangzhou · 杭州",
+  },
 ];
 
-// All critical images to preload before showing content
+// Critical images to preload — only above-the-fold assets
 const CRITICAL_IMAGES = [
-  LOGO,
-  ALIBABA_LOGO,
-  ALIBABA_IMG,
-  SLIDES[0].bg, // first hero slide
+  LOGO,           // 8KB WebP
+  ALIBABA_LOGO,   // 9KB WebP
+  ALIBABA_IMG,    // 487KB WebP (loader bg)
+  // Hero slide 0 loaded separately with fetchPriority=high
 ];
 
 function preloadImages(urls: string[]): Promise<void[]> {
@@ -87,11 +111,11 @@ const TESTIMONIALS = [
 ];
 
 const CITIES = [
-  { bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?auto=format&w=600&q=70", en: "Shanghai", zh: "上海" },
-  { bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&w=600&q=70", en: "Beijing", zh: "北京" },
-  { bg: "https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&w=600&q=70", en: "Shenzhen", zh: "深圳" },
-  { bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?auto=format&w=600&q=70", en: "Guangzhou", zh: "广州" },
-  { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&w=600&q=70", en: "Hangzhou", zh: "杭州" },
+  { bg: unsplash("photo-1538428494232-9c0d8a3ab403", 600, 75), en: "Shanghai", zh: "上海" },
+  { bg: unsplash("photo-1508804185872-d7badad00f7d", 600, 75), en: "Beijing", zh: "北京" },
+  { bg: unsplash("photo-1486325212027-8081e485255e", 600, 75), en: "Shenzhen", zh: "深圳" },
+  { bg: unsplash("photo-1474181487882-5abf3f0ba6c2", 600, 75), en: "Guangzhou", zh: "广州" },
+  { bg: unsplash("photo-1566552881560-0be862a7c445", 600, 75), en: "Hangzhou", zh: "杭州" },
 ];
 
 function useIsMobile() {
@@ -326,6 +350,8 @@ export default function Home() {
           <div key={i} style={{ position: "absolute", inset: 0, opacity: i === currentSlide ? 1 : 0, transition: i === 0 ? "none" : "opacity 1.4s ease", zIndex: 1 }}>
             <img
               src={slide.bg}
+              srcSet={`${slide.bgMobile} 800w, ${slide.bg} 1400w`}
+              sizes="100vw"
               alt=""
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
               loading={i === 0 ? "eager" : "lazy"}
