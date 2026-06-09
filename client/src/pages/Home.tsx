@@ -137,10 +137,19 @@ export default function Home() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isMobile = useIsMobile();
 
-  // ── Loader: fixed 1.5s brand animation, NO image waiting ──
+  // ── Loader: 2.8s brand splash (industry standard — Apple/Airbnb/Notion) ──
+  // Simultaneously preloads Alibaba image in background so it's ready when Loader exits
   useEffect(() => {
-    const t = setTimeout(() => setLoaderOut(true), 1500);
-    return () => clearTimeout(t);
+    // Kick off image preload immediately (non-blocking)
+    const imgSrc = window.innerWidth < 768
+      ? "/manus-storage/alibaba-campus-mobile_62ad74a1.webp"
+      : "/manus-storage/alibaba-campus-desk_5049eb4e.webp";
+    const preload = new Image();
+    preload.src = imgSrc;
+
+    // Fixed 2.8s — sweet spot: brand exposure without user frustration
+    const timer = setTimeout(() => setLoaderOut(true), 2800);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
