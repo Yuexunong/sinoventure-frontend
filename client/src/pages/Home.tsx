@@ -20,12 +20,35 @@ const ALIBABA_IMG2 = "/manus-storage/alibaba-campus2_4333088b.jpg";
 // Google Maps link — Alibaba Binjiang Campus Building 5, Hangzhou
 const MAP_LINK = "https://maps.google.com/?q=阿里巴巴滨江园区五号楼,杭州市滨江区,浙江省";
 
+// Using direct Unsplash source URLs for reliable loading
 const SLIDES = [
-  { bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?w=1400&q=80&fit=crop", city: "Shanghai · 上海" },
-  { bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1400&q=80&fit=crop", city: "Beijing · 北京" },
-  { bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=1400&q=80&fit=crop", city: "Guangzhou · 广州" },
-  { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=1400&q=80&fit=crop", city: "Hangzhou · 杭州" },
+  { bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?auto=format&w=1400&q=75", city: "Shanghai · 上海" },
+  { bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&w=1400&q=75", city: "Beijing · 北京" },
+  { bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?auto=format&w=1400&q=75", city: "Guangzhou · 广州" },
+  { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&w=1400&q=75", city: "Hangzhou · 杭州" },
 ];
+
+// All critical images to preload before showing content
+const CRITICAL_IMAGES = [
+  LOGO,
+  ALIBABA_LOGO,
+  ALIBABA_IMG,
+  SLIDES[0].bg, // first hero slide
+];
+
+function preloadImages(urls: string[]): Promise<void[]> {
+  return Promise.all(
+    urls.map(
+      (url) =>
+        new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve(); // resolve even on error so loader doesn't hang
+          img.src = url;
+        })
+    )
+  );
+}
 
 const SERVICES = [
   { num: "01", icon: "🏢", title: "Company Registration", desc: "Full WFOE, Joint Venture, or Representative Office registration including name approval, business scope filing, capital verification, and business license issuance." },
@@ -64,11 +87,11 @@ const TESTIMONIALS = [
 ];
 
 const CITIES = [
-  { bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?w=600&q=80&fit=crop", en: "Shanghai", zh: "上海" },
-  { bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=600&q=80&fit=crop", en: "Beijing", zh: "北京" },
-  { bg: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80&fit=crop", en: "Shenzhen", zh: "深圳" },
-  { bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=600&q=80&fit=crop", en: "Guangzhou", zh: "广州" },
-  { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=600&q=80&fit=crop", en: "Hangzhou", zh: "杭州" },
+  { bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?auto=format&w=600&q=70", en: "Shanghai", zh: "上海" },
+  { bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&w=600&q=70", en: "Beijing", zh: "北京" },
+  { bg: "https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&w=600&q=70", en: "Shenzhen", zh: "深圳" },
+  { bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?auto=format&w=600&q=70", en: "Guangzhou", zh: "广州" },
+  { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&w=600&q=70", en: "Hangzhou", zh: "杭州" },
 ];
 
 function useIsMobile() {
@@ -124,10 +147,23 @@ export default function Home() {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    const dismiss = () => setLoaderOut(true);
-    const t1 = setTimeout(dismiss, 2800);
-    window.addEventListener("load", () => setTimeout(dismiss, 1000));
-    return () => clearTimeout(t1);
+    let cancelled = false;
+    // Preload all critical images first, then dismiss loader
+    const maxWait = setTimeout(() => {
+      if (!cancelled) setLoaderOut(true);
+    }, 8000); // absolute max 8s fallback
+
+    preloadImages(CRITICAL_IMAGES).then(() => {
+      if (!cancelled) {
+        // Small delay after images load so user sees the branded loader
+        setTimeout(() => setLoaderOut(true), 600);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      clearTimeout(maxWait);
+    };
   }, []);
 
   useEffect(() => {
@@ -182,8 +218,15 @@ export default function Home() {
         pointerEvents: loaderOut ? "none" : "all",
         overflow: "hidden",
       }}>
-        {/* Full-screen Alibaba campus background */}
-        <img src={ALIBABA_IMG} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+        {/* Full-screen Alibaba campus background — ink fallback if image not yet loaded */}
+        <div style={{ position: "absolute", inset: 0, background: ink }} />
+        <img
+          src={ALIBABA_IMG}
+          alt=""
+          fetchPriority="high"
+          decoding="sync"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+        />
         {/* Dark overlay */}
         <div style={{ position: "absolute", inset: 0, background: "rgba(10,14,23,0.72)" }} />
         {/* Gold vignette */}
@@ -277,9 +320,18 @@ export default function Home() {
 
       {/* ─── HERO ─── */}
       <div style={{ position: "relative", width: "100%", height: isMobile ? "100svh" : "100vh", overflow: "hidden" }}>
+        {/* Ink fallback background while images load */}
+        <div style={{ position: "absolute", inset: 0, background: ink, zIndex: 0 }} />
         {SLIDES.map((slide, i) => (
-          <div key={i} style={{ position: "absolute", inset: 0, opacity: i === currentSlide ? 1 : 0, transition: "opacity 1.4s ease" }}>
-            <img src={slide.bg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} loading={i === 0 ? "eager" : "lazy"} />
+          <div key={i} style={{ position: "absolute", inset: 0, opacity: i === currentSlide ? 1 : 0, transition: i === 0 ? "none" : "opacity 1.4s ease", zIndex: 1 }}>
+            <img
+              src={slide.bg}
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : "low"}
+              decoding={i === 0 ? "sync" : "async"}
+            />
             <div style={{ position: "absolute", inset: 0, background: isMobile ? "rgba(10,14,23,0.72)" : "linear-gradient(to right, rgba(10,14,23,0.82) 0%, rgba(10,14,23,0.55) 50%, rgba(10,14,23,0.3) 100%)" }} />
           </div>
         ))}
