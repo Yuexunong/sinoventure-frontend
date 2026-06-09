@@ -1,8 +1,7 @@
-// SinoVenture — Home Page (Mobile-First Redesign)
+// BridgeChina — Home Page (Mobile-First)
 // Design: Dark Gold Luxury | Art Deco Modernism
+// Brand: BridgeChina | Located at Alibaba Global Cross-border Center, Hangzhou
 // Colors: Ink Black #0A0E17, Gold #B8965A/#D4AF72
-// Fonts: Cormorant Garamond (display) + Inter (body)
-// Mobile-first: all layouts stack vertically on small screens
 
 import { useEffect, useRef, useState } from "react";
 
@@ -12,28 +11,19 @@ const ink = "#0A0E17";
 const ink2 = "#131929";
 const line = "rgba(184,150,90,0.3)";
 
-// Alibaba campus image (uploaded to CDN)
+// Brand assets
+const LOGO = "/manus-storage/bridgechina-logo_fecd7865.jpg";
 const ALIBABA_IMG = "/manus-storage/alibaba-campus_e017c9e6.jpg";
 const ALIBABA_IMG2 = "/manus-storage/alibaba-campus2_4333088b.jpg";
 
-// Hero slides — using reliable Unsplash IDs
+// Google Maps link — Alibaba Binjiang Campus Building 5, Hangzhou
+const MAP_LINK = "https://maps.google.com/?q=阿里巴巴滨江园区五号楼,杭州市滨江区,浙江省";
+
 const SLIDES = [
-  {
-    bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?w=1400&q=80&fit=crop",
-    city: "Shanghai · 上海",
-  },
-  {
-    bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1400&q=80&fit=crop",
-    city: "Beijing · 北京",
-  },
-  {
-    bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=1400&q=80&fit=crop",
-    city: "Guangzhou · 广州",
-  },
-  {
-    bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=1400&q=80&fit=crop",
-    city: "Hangzhou · 杭州",
-  },
+  { bg: "https://images.unsplash.com/photo-1538428494232-9c0d8a3ab403?w=1400&q=80&fit=crop", city: "Shanghai · 上海" },
+  { bg: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1400&q=80&fit=crop", city: "Beijing · 北京" },
+  { bg: "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=1400&q=80&fit=crop", city: "Guangzhou · 广州" },
+  { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=1400&q=80&fit=crop", city: "Hangzhou · 杭州" },
 ];
 
 const SERVICES = [
@@ -55,7 +45,7 @@ const STEPS = [
 const WHY_POINTS = [
   { title: "Bilingual Legal Expertise", desc: "All client-facing advisors are fully fluent in English and Mandarin. No translation gaps, no middlemen — direct communication throughout your case." },
   { title: "Regulatory Intelligence", desc: "Our team continuously monitors SAMR, MOFCOM, and PSB policy updates. Clients receive proactive alerts when rules affecting their business change." },
-  { title: "Nationwide Coverage", desc: "Offices and established relationships in Shanghai, Beijing, Shenzhen, Guangzhou, Chengdu, Hangzhou, and 15 additional cities." },
+  { title: "Alibaba Ecosystem Access", desc: "Based inside the Alibaba Global Cross-border Center, we leverage Alibaba's trade infrastructure, cross-border commerce networks, and government relationships." },
   { title: "Transparent Fixed Pricing", desc: "A complete cost breakdown before you sign anything. No hidden government fees, no unexpected surcharges at the end of the process." },
 ];
 
@@ -67,9 +57,9 @@ const VISAS = [
 ];
 
 const TESTIMONIALS = [
-  { av: "S", text: '"SinoVenture registered our Shanghai trading company in ten working days. The whole process was handled remotely — documents, address, everything. Outstanding."', name: "Sarah Okonkwo", role: "Director · AfriTrade Imports, Nigeria" },
-  { av: "A", text: '"My Z-visa had been rejected twice before I contacted SinoVenture. They identified the errors in minutes and secured approval on the very first attempt."', name: "Aleksei Volkov", role: "Operations Manager · Russia" },
-  { av: "J", text: '"From WFOE structure selection to our first invoice — they guided every single step. Genuinely a one-stop service. I could not have done this without them."', name: "Julien Moreau", role: "Founder · TechVenture SAS, France" },
+  { av: "S", text: '"BridgeChina registered our Shanghai trading company in ten working days. The whole process was handled remotely — documents, address, everything. Outstanding."', name: "Sarah Okonkwo", role: "Director · AfriTrade Imports, Nigeria" },
+  { av: "A", text: '"My Z-visa had been rejected twice before I contacted BridgeChina. They identified the errors in minutes and secured approval on the very first attempt."', name: "Aleksei Volkov", role: "Operations Manager · Russia" },
+  { av: "J", text: '"From WFOE structure selection to our first invoice — they guided every single step. Being inside the Alibaba ecosystem gave us incredible access and credibility."', name: "Julien Moreau", role: "Founder · TechVenture SAS, France" },
 ];
 
 const CITIES = [
@@ -80,7 +70,6 @@ const CITIES = [
   { bg: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=600&q=80&fit=crop", en: "Hangzhou", zh: "杭州" },
 ];
 
-// ─── RESPONSIVE HOOK ─────────────────────────────────────────────────────────
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -92,7 +81,6 @@ function useIsMobile() {
   return isMobile;
 }
 
-// ─── GOLD DIVIDER ────────────────────────────────────────────────────────────
 function GoldDivider() {
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
@@ -103,7 +91,6 @@ function GoldDivider() {
   );
 }
 
-// ─── SECTION LABEL ───────────────────────────────────────────────────────────
 function SectionLabel({ text, center = false }: { text: string; center?: boolean }) {
   return (
     <div data-reveal style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, justifyContent: center ? "center" : "flex-start" }}>
@@ -114,7 +101,17 @@ function SectionLabel({ text, center = false }: { text: string; center?: boolean
   );
 }
 
-// ─── MAIN ────────────────────────────────────────────────────────────────────
+// ─── Brand Logo Component ─────────────────────────────────────────────────────
+function BrandLogo({ size = 40 }: { size?: number }) {
+  return (
+    <img
+      src={LOGO}
+      alt="BridgeChina"
+      style={{ width: size, height: size, objectFit: "contain", objectPosition: "center", background: "#000", flexShrink: 0 }}
+    />
+  );
+}
+
 export default function Home() {
   const [loaderOut, setLoaderOut] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -127,8 +124,8 @@ export default function Home() {
 
   useEffect(() => {
     const dismiss = () => setLoaderOut(true);
-    const t1 = setTimeout(dismiss, 2000);
-    window.addEventListener("load", () => setTimeout(dismiss, 800));
+    const t1 = setTimeout(dismiss, 2800);
+    window.addEventListener("load", () => setTimeout(dismiss, 1000));
     return () => clearTimeout(t1);
   }, []);
 
@@ -176,27 +173,57 @@ export default function Home() {
     <div style={{ background: ink, color: "#fff", minHeight: "100vh", overflowX: "hidden" }}>
 
       {/* ─── LOADER ─── */}
-      <div style={{ position: "fixed", inset: 0, background: ink, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.8s 0.2s", opacity: loaderOut ? 0 : 1, pointerEvents: loaderOut ? "none" : "all" }}>
-        <div style={{ textAlign: "center" }}>
-          {/* Alibaba campus as loader background hint */}
-          <div style={{ width: 80, height: 56, backgroundImage: `url('${ALIBABA_IMG2}')`, backgroundSize: "cover", backgroundPosition: "center", border: `1px solid ${gold}`, margin: "0 auto 12px", opacity: 0.85 }} />
-          <div className="loader-line-anim" />
-          <div style={{ fontSize: 11, color: gold, letterSpacing: "0.2em", textTransform: "uppercase", marginTop: 12 }}>SinoVenture</div>
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        transition: "opacity 1s 0.3s",
+        opacity: loaderOut ? 0 : 1,
+        pointerEvents: loaderOut ? "none" : "all",
+        overflow: "hidden",
+      }}>
+        {/* Full-screen Alibaba campus background */}
+        <img src={ALIBABA_IMG} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+        {/* Dark overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "rgba(10,14,23,0.72)" }} />
+        {/* Gold vignette */}
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 30%, rgba(10,14,23,0.85) 100%)" }} />
+
+        {/* Brand block */}
+        <div style={{ position: "relative", zIndex: 2, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
+          {/* Logo */}
+          <div style={{ width: isMobile ? 140 : 180, height: isMobile ? 140 : 180, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
+            <img src={LOGO} alt="BridgeChina" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          </div>
+
+          {/* Brand name */}
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 28 : 38, fontWeight: 300, color: "#fff", letterSpacing: "0.12em", textTransform: "uppercase" as const, lineHeight: 1 }}>
+            BridgeChina
+          </div>
+          <div style={{ fontSize: isMobile ? 10 : 11, color: gold, letterSpacing: "0.22em", textTransform: "uppercase" as const, marginTop: 6, marginBottom: 28 }}>
+            Premium Business Services
+          </div>
+
+          {/* Loading bar */}
+          <div className="loader-line-anim" style={{ width: isMobile ? 100 : 140 }} />
+
+          {/* Alibaba badge */}
+          <div style={{ marginTop: 32, display: "flex", alignItems: "center", gap: 10, border: `1px solid ${line}`, padding: "8px 18px", background: "rgba(10,14,23,0.6)" }}>
+            <img src={ALIBABA_IMG2} alt="Alibaba" style={{ width: 28, height: 20, objectFit: "cover" }} />
+            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em" }}>Based at Alibaba Global Cross-border Center</span>
+          </div>
         </div>
       </div>
 
       {/* ─── NAV ─── */}
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 800, display: "flex", alignItems: "center", justifyContent: "space-between", padding: isMobile ? "0 16px" : "0 5vw", height: isMobile ? 64 : 76, transition: "background 0.4s, box-shadow 0.4s", background: navScrolled || mobileMenuOpen ? "rgba(10,14,23,0.96)" : "transparent", backdropFilter: navScrolled ? "blur(16px)" : "none", boxShadow: navScrolled ? `0 1px 0 ${line}` : "none" }}>
-        {/* Brand — Alibaba campus image as logo */}
         <a href="#" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
-          <div style={{ width: isMobile ? 36 : 44, height: isMobile ? 26 : 32, backgroundImage: `url('${ALIBABA_IMG2}')`, backgroundSize: "cover", backgroundPosition: "center", border: `1px solid ${gold}`, flexShrink: 0 }} />
+          <BrandLogo size={isMobile ? 36 : 44} />
           <div style={{ lineHeight: 1.2 }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 17 : 20, fontWeight: 600, color: "#fff", letterSpacing: "0.06em" }}>SinoVenture</div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 17 : 20, fontWeight: 600, color: "#fff", letterSpacing: "0.06em" }}>BridgeChina</div>
             <div style={{ fontSize: isMobile ? 8 : 10, color: gold, letterSpacing: "0.14em", textTransform: "uppercase" as const }}>Premium Business Services</div>
           </div>
         </a>
 
-        {/* Desktop links */}
         {!isMobile && (
           <ul style={{ display: "flex", gap: 32, listStyle: "none", margin: 0, padding: 0 }}>
             {["services", "process", "visa", "cities", "contact"].map((id) => (
@@ -210,7 +237,6 @@ export default function Home() {
           </ul>
         )}
 
-        {/* Desktop CTA */}
         {!isMobile && (
           <button onClick={() => scrollTo("contact")} style={{ border: `1px solid ${gold}`, color: gold, padding: "9px 22px", fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase" as const, background: "transparent", cursor: "pointer", fontFamily: "'Inter',sans-serif", transition: "all 0.3s" }}
             onMouseEnter={e => { e.currentTarget.style.background = gold; e.currentTarget.style.color = ink; }}
@@ -219,7 +245,6 @@ export default function Home() {
           </button>
         )}
 
-        {/* Mobile hamburger */}
         {isMobile && (
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: "none", border: `1px solid ${line}`, color: gold, width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, cursor: "pointer" }}>
             {mobileMenuOpen ? "✕" : "☰"}
@@ -227,7 +252,7 @@ export default function Home() {
         )}
       </nav>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div style={{ position: "fixed", top: 64, left: 0, right: 0, bottom: 0, background: "rgba(10,14,23,0.98)", zIndex: 799, padding: "24px 20px", overflowY: "auto" as const }}>
           {["services", "process", "visa", "cities", "contact"].map((id) => (
@@ -238,10 +263,12 @@ export default function Home() {
           <button onClick={() => scrollTo("contact")} style={{ marginTop: 24, width: "100%", background: gold, color: ink, border: "none", padding: "16px", fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, cursor: "pointer" }}>
             Free Consultation
           </button>
-          {/* Alibaba campus image in mobile menu */}
-          <div style={{ marginTop: 32, borderTop: `1px solid ${line}`, paddingTop: 24 }}>
-            <img src={ALIBABA_IMG2} alt="Alibaba Global Cross-border Center" style={{ width: "100%", height: 120, objectFit: "cover", opacity: 0.7 }} />
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 8, textAlign: "center" as const }}>Alibaba Global Cross-border Center · Hangzhou</div>
+          <div style={{ marginTop: 28, padding: "16px", border: `1px solid ${line}`, background: "rgba(184,150,90,0.05)", display: "flex", alignItems: "center", gap: 12 }}>
+            <img src={ALIBABA_IMG2} alt="Alibaba" style={{ width: 48, height: 34, objectFit: "cover" }} />
+            <div>
+              <div style={{ fontSize: 10, color: gold, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Our Location</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>Alibaba Global Cross-border Center · Hangzhou</div>
+            </div>
           </div>
         </div>
       )}
@@ -255,7 +282,6 @@ export default function Home() {
           </div>
         ))}
 
-        {/* Hero Content */}
         <div style={{ position: "absolute", inset: 0, zIndex: 2, display: "flex", flexDirection: "column" as const, justifyContent: "center", padding: isMobile ? "0 20px" : "0 5vw", paddingTop: isMobile ? 64 : 76 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, opacity: 0, animation: "heroIn 0.9s 1.2s forwards" }}>
             <div style={{ width: 36, height: 1, background: gold }} />
@@ -278,16 +304,15 @@ export default function Home() {
           )}
 
           <div style={{ display: "flex", gap: isMobile ? 12 : 20, flexWrap: "wrap" as const, opacity: 0, animation: "heroIn 0.9s 2s forwards" }}>
-            <button onClick={() => scrollTo("contact")} style={{ background: gold, color: ink, padding: isMobile ? "14px 28px" : "16px 40px", fontSize: isMobile ? 12 : 12.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, border: "none", cursor: "pointer", fontFamily: "'Inter',sans-serif", transition: "all 0.3s" }}>
+            <button onClick={() => scrollTo("contact")} style={{ background: gold, color: ink, padding: isMobile ? "14px 28px" : "16px 40px", fontSize: isMobile ? 12 : 12.5, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, border: "none", cursor: "pointer", fontFamily: "'Inter',sans-serif" }}>
               Start Your Journey
             </button>
-            <button onClick={() => scrollTo("services")} style={{ border: "1px solid rgba(255,255,255,0.4)", color: "rgba(255,255,255,0.8)", padding: isMobile ? "14px 24px" : "16px 36px", fontSize: isMobile ? 12 : 12.5, fontWeight: 400, letterSpacing: "0.1em", textTransform: "uppercase" as const, background: "transparent", cursor: "pointer", fontFamily: "'Inter',sans-serif", transition: "all 0.3s" }}>
+            <button onClick={() => scrollTo("services")} style={{ border: "1px solid rgba(255,255,255,0.4)", color: "rgba(255,255,255,0.8)", padding: isMobile ? "14px 24px" : "16px 36px", fontSize: isMobile ? 12 : 12.5, fontWeight: 400, letterSpacing: "0.1em", textTransform: "uppercase" as const, background: "transparent", cursor: "pointer", fontFamily: "'Inter',sans-serif" }}>
               Explore Services
             </button>
           </div>
         </div>
 
-        {/* City label — hide on very small screens */}
         {!isMobile && (
           <div style={{ position: "absolute", bottom: 100, left: "5vw", zIndex: 3, display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.4)" }}>Currently showing</span>
@@ -295,7 +320,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Carousel dots */}
         <div style={{ position: "absolute", bottom: isMobile ? 100 : 100, right: isMobile ? 20 : "5vw", zIndex: 3, display: "flex", gap: 8, alignItems: "center" }}>
           {SLIDES.map((_, i) => (
             <div key={i} onClick={() => goSlide(i)} style={{ width: i === currentSlide ? 36 : 20, height: 2, background: i === currentSlide ? gold : "rgba(255,255,255,0.3)", cursor: "pointer", transition: "all 0.4s" }} />
@@ -318,7 +342,58 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ─── GOLD DIVIDER ─── */}
+      <GoldDivider />
+
+      {/* ─── ALIBABA ENDORSEMENT BANNER ─── */}
+      <section style={{ background: ink2, borderTop: `1px solid ${line}`, borderBottom: `1px solid ${line}`, padding: isMobile ? "48px 20px" : "64px 5vw", position: "relative", overflow: "hidden" }}>
+        {/* Background campus image, very subtle */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${ALIBABA_IMG}')`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.08 }} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ textAlign: "center" as const, marginBottom: isMobile ? 32 : 48 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, border: `1px solid ${line}`, padding: "6px 16px", marginBottom: 20 }}>
+              <div style={{ width: 6, height: 6, background: gold, borderRadius: "50%" }} />
+              <span style={{ fontSize: 10, color: gold, letterSpacing: "0.18em", textTransform: "uppercase" as const }}>Strategic Location</span>
+            </div>
+            <h2 data-reveal style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 26 : "clamp(28px,3.5vw,46px)", fontWeight: 300, color: "#fff", lineHeight: 1.2, marginBottom: 12 }}>
+              Based Inside the<br /><em style={{ color: gold2, fontStyle: "italic" }}>Alibaba Global Cross-border Center</em>
+            </h2>
+            <p data-reveal style={{ fontSize: isMobile ? 13 : 14, color: "rgba(255,255,255,0.45)", maxWidth: 560, margin: "0 auto", lineHeight: 1.8 }}>
+              BridgeChina operates from within Alibaba's premier international trade hub in Hangzhou — giving our clients direct access to cross-border commerce infrastructure, government relationships, and Alibaba's global trade network.
+            </p>
+          </div>
+
+          {/* Three pillars */}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: isMobile ? 16 : 1, background: isMobile ? "transparent" : line, border: isMobile ? "none" : `1px solid ${line}` }}>
+            {[
+              { icon: "🏛️", title: "Government-Backed Hub", desc: "The Alibaba Global Cross-border Center is a state-approved international trade zone with streamlined regulatory access and customs facilitation." },
+              { icon: "🌐", title: "Alibaba Trade Network", desc: "Direct access to Alibaba's cross-border e-commerce infrastructure, AliExpress, 1688, and Cainiao logistics — the world's largest trade ecosystem." },
+              { icon: "🤝", title: "Established Relationships", desc: "Years of working alongside Alibaba's partner network means faster approvals, better banking relationships, and trusted introductions for our clients." },
+            ].map((item, i) => (
+              <div key={i} data-reveal data-reveal-delay={i > 0 ? String(i) : undefined} style={{ background: ink2, padding: isMobile ? "24px 20px" : "36px 32px", border: isMobile ? `1px solid ${line}` : "none" }}>
+                <div style={{ fontSize: 28, marginBottom: 16 }}>{item.icon}</div>
+                <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 17 : 19, fontWeight: 400, color: "#fff", marginBottom: 10 }}>{item.title}</h4>
+                <p style={{ fontSize: isMobile ? 12 : 13, color: "rgba(255,255,255,0.42)", lineHeight: 1.75 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Campus image strip */}
+          <div data-reveal style={{ marginTop: isMobile ? 24 : 32, position: "relative", overflow: "hidden" }}>
+            <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center, Hangzhou Binjiang" style={{ width: "100%", height: isMobile ? 180 : 260, objectFit: "cover", objectPosition: "center 40%", display: "block" }} loading="lazy" />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(10,14,23,0.7) 0%, transparent 40%, transparent 60%, rgba(10,14,23,0.7) 100%)" }} />
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(10,14,23,0.8))", padding: isMobile ? "16px 16px" : "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: 10, color: gold, letterSpacing: "0.14em", textTransform: "uppercase" as const }}>Our Office</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 14 : 17, color: "#fff", marginTop: 3 }}>阿里巴巴滨江园区五号楼 · Hangzhou, Zhejiang</div>
+              </div>
+              <a href={MAP_LINK} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, border: `1px solid ${gold}`, color: gold, padding: "8px 14px", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", flexShrink: 0, transition: "all 0.3s" }}>
+                📍 View on Map
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <GoldDivider />
 
       {/* ─── SERVICES ─── */}
@@ -338,7 +413,7 @@ export default function Home() {
         <SectionLabel text="How It Works" center />
         <h2 data-reveal style={{ ...secH, textAlign: "center" as const, margin: "0 auto 14px" }}>From Inquiry to<br /><em style={{ color: gold2, fontStyle: "italic" }}>Open for Business</em></h2>
         <p data-reveal style={{ ...secP, textAlign: "center" as const, maxWidth: 500, margin: "0 auto" + (isMobile ? " 36px" : " 60px") }}>A transparent, structured process designed to minimise delays and maximise certainty.</p>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4,1fr)", gap: isMobile ? 24 : 0, marginTop: isMobile ? 0 : 0 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4,1fr)", gap: isMobile ? 24 : 0 }}>
           {STEPS.map((step, i) => (
             <div key={i} data-reveal data-reveal-delay={i > 0 ? String(Math.min(i, 3)) : undefined} style={{ padding: isMobile ? "0 8px" : "0 24px", textAlign: "center" as const }}>
               <div style={{ width: isMobile ? 56 : 72, height: isMobile ? 56 : 72, border: `1px solid ${gold}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", background: ink2, fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? 22 : 26, fontWeight: 300, color: gold2 }}>{step.n}</div>
@@ -353,7 +428,7 @@ export default function Home() {
       <section style={{ padding: secPad, background: ink }}>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 80, alignItems: "center" }}>
           <div>
-            <SectionLabel text="Why SinoVenture" />
+            <SectionLabel text="Why BridgeChina" />
             <h2 data-reveal style={secH}>We Know What<br /><em style={{ color: gold2, fontStyle: "italic" }}>China Expects</em></h2>
             <p data-reveal style={secP}>Chinese business regulations change constantly. Our team tracks every update so your filings are always current, compliant, and bulletproof.</p>
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -368,9 +443,8 @@ export default function Home() {
               ))}
             </ul>
           </div>
-          {/* Alibaba campus image */}
           <div data-reveal style={{ position: "relative" }}>
-            <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center, Hangzhou" style={{ width: "100%", height: isMobile ? 240 : "auto", aspectRatio: isMobile ? undefined : "4/5", objectFit: "cover", objectPosition: "center", display: "block" }} loading="lazy" />
+            <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center" style={{ width: "100%", height: isMobile ? 240 : "auto", aspectRatio: isMobile ? undefined : "4/5", objectFit: "cover", objectPosition: "center", display: "block" }} loading="lazy" />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 50%, rgba(10,14,23,0.7))" }} />
             {!isMobile && <div style={{ position: "absolute", top: -16, left: -16, right: 16, bottom: 16, border: `1px solid ${line}`, pointerEvents: "none", zIndex: -1 }} />}
             <div style={{ position: "absolute", bottom: isMobile ? 12 : -24, right: isMobile ? 12 : -32, background: gold, color: ink, padding: isMobile ? "16px 14px" : "24px 20px", textAlign: "center" as const }}>
@@ -379,13 +453,13 @@ export default function Home() {
             </div>
             <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 16px", background: "rgba(10,14,23,0.75)" }}>
               <div style={{ fontSize: 10, color: gold, letterSpacing: "0.12em", textTransform: "uppercase" as const }}>Our Location</div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>阿里巴巴全球跨境中心 · 杭州滨江</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>阿里巴巴滨江园区五号楼 · 杭州</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── VISA TYPES ─── */}
+      {/* ─── VISA ─── */}
       <section id="visa" style={{ padding: secPad, background: ink2 }}>
         <SectionLabel text="Visa Services" />
         <h2 data-reveal style={secH}>Every Business<br /><em style={{ color: gold2, fontStyle: "italic" }}>Visa Category</em></h2>
@@ -402,7 +476,7 @@ export default function Home() {
         )}
         <SectionLabel text="Client Testimonials" center />
         <h2 data-reveal style={{ ...secH, textAlign: "center" as const, margin: "0 auto 14px" }}>Trusted Across<br /><em style={{ color: gold2, fontStyle: "italic" }}>58 Countries</em></h2>
-        <p data-reveal style={{ ...secP, textAlign: "center" as const, maxWidth: 480, margin: "0 auto" + (isMobile ? " 36px" : " 56px") }}>International entrepreneurs from every continent have built their China operations through SinoVenture.</p>
+        <p data-reveal style={{ ...secP, textAlign: "center" as const, maxWidth: 480, margin: "0 auto" + (isMobile ? " 36px" : " 56px") }}>International entrepreneurs from every continent have built their China operations through BridgeChina.</p>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: isMobile ? 16 : 24 }}>
           {TESTIMONIALS.map((t, i) => <TestiCard key={i} t={t} delay={isMobile ? 0 : i} isMobile={isMobile} />)}
         </div>
@@ -423,11 +497,6 @@ export default function Home() {
       <div style={{ background: "linear-gradient(135deg,#0C1525 0%,#131929 100%)", padding: isMobile ? "64px 20px" : "120px 5vw", textAlign: "center" as const, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${gold},transparent)` }} />
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1, background: `linear-gradient(90deg,transparent,${gold},transparent)` }} />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginBottom: 32 }}>
-          <div style={{ width: 60, height: 1, background: `linear-gradient(90deg,transparent,${gold})` }} />
-          <div style={{ width: 8, height: 8, background: gold, transform: "rotate(45deg)" }} />
-          <div style={{ width: 60, height: 1, background: `linear-gradient(90deg,${gold},transparent)` }} />
-        </div>
         <h2 data-reveal style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: isMobile ? 30 : "clamp(32px,5vw,62px)", fontWeight: 300, color: "#fff", lineHeight: 1.2, marginBottom: 16 }}>
           Ready to Enter<br />the Chinese Market?
         </h2>
@@ -449,21 +518,46 @@ export default function Home() {
             <SectionLabel text="Get In Touch" />
             <h2 data-reveal style={secH}>Request a Free<br /><em style={{ color: gold2, fontStyle: "italic" }}>Consultation</em></h2>
             <p data-reveal style={secP}>Complete the form and a dedicated advisor will respond within 24 hours. Urgent visa cases are prioritised.</p>
-            <div style={{ display: "flex", flexDirection: "column" as const, gap: 24 }}>
+
+            <div style={{ display: "flex", flexDirection: "column" as const, gap: 24, marginBottom: 36 }}>
               {[
-                { icon: "✉", label: "Email", value: "ylsg19971102@gmail.com", note: "Replies within 24 hours" },
-                { icon: "💬", label: "WeChat · WhatsApp", value: "+1 775 744 7058", note: "WeChat / WhatsApp: 17757447058" },
-                { icon: "📍", label: "Office", value: "杭州市滨江区\n阿里巴巴全球跨境中心", note: "" },
+                { icon: "✉", label: "Email", value: "ylsg19971102@gmail.com", note: "Replies within 24 hours", href: "mailto:ylsg19971102@gmail.com" },
+                { icon: "💬", label: "WeChat · WhatsApp", value: "+1 775 744 7058", note: "WeChat / WhatsApp: 17757447058", href: "https://wa.me/17757447058" },
               ].map((item, i) => (
-                <div key={i} data-reveal style={{ display: "flex", alignItems: "flex-start", gap: 16, paddingBottom: 24, borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
+                <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "flex-start", gap: 16, paddingBottom: 24, borderBottom: "1px solid rgba(255,255,255,0.05)", textDecoration: "none" }}>
                   <div style={{ width: 40, height: 40, border: `1px solid ${line}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 16, color: gold }}>{item.icon}</div>
                   <div>
                     <div style={{ fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase" as const, color: gold, marginBottom: 5 }}>{item.label}</div>
-                    <div style={{ fontSize: isMobile ? 14 : 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.6, whiteSpace: "pre-line" as const }}>{item.value}</div>
+                    <div style={{ fontSize: isMobile ? 14 : 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}>{item.value}</div>
                     {item.note && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{item.note}</div>}
                   </div>
-                </div>
+                </a>
               ))}
+
+              {/* Office — map linked */}
+              <a href={MAP_LINK} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "flex-start", gap: 16, textDecoration: "none", cursor: "pointer" }}>
+                <div style={{ width: 40, height: 40, border: `1px solid ${line}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 16, color: gold }}>📍</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase" as const, color: gold, marginBottom: 5 }}>Office</div>
+                  <div style={{ fontSize: isMobile ? 14 : 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}>阿里巴巴滨江园区五号楼<br />Alibaba Binjiang Campus, Bldg. 5<br />杭州市滨江区，浙江省</div>
+                  <div style={{ fontSize: 11, color: gold, marginTop: 6, display: "flex", alignItems: "center", gap: 4 }}>
+                    <span>View on Google Maps →</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            {/* Alibaba endorsement image */}
+            <div data-reveal style={{ position: "relative", overflow: "hidden", border: `1px solid ${line}` }}>
+              <img src={ALIBABA_IMG} alt="Alibaba Global Cross-border Center" style={{ width: "100%", height: isMobile ? 160 : 200, objectFit: "cover", objectPosition: "center 40%", display: "block" }} loading="lazy" />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, transparent 40%, rgba(10,14,23,0.85))" }} />
+              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+                <img src={ALIBABA_IMG2} alt="" style={{ width: 36, height: 26, objectFit: "cover", border: `1px solid ${gold}` }} />
+                <div>
+                  <div style={{ fontSize: 10, color: gold, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Alibaba Global Cross-border Center</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>阿里巴巴全球跨境中心 · 杭州滨江</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -495,13 +589,18 @@ export default function Home() {
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr", gap: isMobile ? 32 : 48, paddingBottom: 40, borderBottom: "1px solid rgba(255,255,255,0.05)", marginBottom: 24 }}>
           <div style={{ gridColumn: isMobile ? "1 / -1" : undefined }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <img src={ALIBABA_IMG2} alt="SinoVenture" style={{ width: 44, height: 32, objectFit: "cover", border: `1px solid ${gold}` }} />
+              <BrandLogo size={44} />
               <div>
-                <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, fontWeight: 600, color: "#fff", letterSpacing: "0.06em" }}>SinoVenture</div>
+                <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, fontWeight: 600, color: "#fff", letterSpacing: "0.06em" }}>BridgeChina</div>
                 <div style={{ fontSize: 9, color: gold, letterSpacing: "0.14em", textTransform: "uppercase" as const }}>Premium Business Services</div>
               </div>
             </div>
             <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, marginTop: 14, maxWidth: 260 }}>Professional foreign affairs and business setup services for international entrepreneurs in China. Based at Alibaba Global Cross-border Center, Hangzhou.</p>
+            {/* Alibaba badge in footer */}
+            <a href={MAP_LINK} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 16, border: `1px solid ${line}`, padding: "8px 12px", textDecoration: "none" }}>
+              <img src={ALIBABA_IMG2} alt="" style={{ width: 30, height: 22, objectFit: "cover" }} />
+              <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em" }}>Alibaba Global Cross-border Center</span>
+            </a>
           </div>
           {[
             { title: "Services", links: ["Company Registration", "Registered Address", "Work Visa (Z)", "Document Review", "Business Permits", "Bank Account"] },
@@ -511,14 +610,14 @@ export default function Home() {
             <div key={col.title}>
               <h5 style={{ fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase" as const, color: gold, marginBottom: 16, fontWeight: 400 }}>{col.title}</h5>
               {col.links.map(link => (
-                <a key={link} href="#" style={{ display: "block", fontSize: 12, color: "rgba(255,255,255,0.35)", textDecoration: "none", marginBottom: 10, transition: "color 0.2s" }}
+                <a key={link} href="#" style={{ display: "block", fontSize: 12, color: "rgba(255,255,255,0.35)", textDecoration: "none", marginBottom: 10 }}
                   onMouseEnter={e => e.currentTarget.style.color = gold2} onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}>{link}</a>
               ))}
             </div>
           ))}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11, color: "rgba(255,255,255,0.2)", flexWrap: "wrap" as const, gap: 8 }}>
-          <span>© 2025 SinoVenture. All rights reserved.</span>
+          <span>© 2025 BridgeChina. All rights reserved.</span>
           <span style={{ display: "flex", gap: 16 }}>
             {["Privacy Policy", "Terms of Service"].map(link => (
               <a key={link} href="#" style={{ color: "rgba(255,255,255,0.2)", textDecoration: "none" }}>{link}</a>
@@ -541,7 +640,7 @@ function ServiceCard({ svc, delay, isMobile }: { svc: typeof SERVICES[0]; delay:
       <span style={{ fontSize: isMobile ? 24 : 28, marginBottom: 18, display: "block" }}>{svc.icon}</span>
       <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: isMobile ? 18 : 21, fontWeight: 400, color: "#fff", marginBottom: 10 }}>{svc.title}</h3>
       <p style={{ fontSize: isMobile ? 12 : 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, marginBottom: 20 }}>{svc.desc}</p>
-      <a href="#contact" style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: gold, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>Enquire Now →</a>
+      <a href="#contact" style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: gold, textDecoration: "none" }}>Enquire Now →</a>
     </div>
   );
 }
